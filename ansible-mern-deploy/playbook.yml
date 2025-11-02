@@ -1,0 +1,7 @@
+---
+- hosts: mern_servers
+  become: true
+  roles:
+    - nodejs
+    - mongodb
+    - nginx

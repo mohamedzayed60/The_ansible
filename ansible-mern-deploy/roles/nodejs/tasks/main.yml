@@ -1,0 +1,29 @@
+---
+- name: Add Node.js repository
+  apt_repository:
+    repo: 'ppa:chris-lea/node.js'
+    state: present
+  when: ansible_os_family == "Debian"
+
+- name: Install Node.js and npm
+  apt:
+    name: ['nodejs', 'npm']
+    state: present
+    update_cache: yes
+
+- name: Clone MERN app repository
+  git:
+    repo: 'https://github.com/mohamedzayed60/mern-demo.git'
+    dest: /var/www/mern-demo
+
+- name: Install dependencies
+  npm:
+    path: /var/www/mern-demo/server
+    production: yes
+
+- name: Start Node.js backend
+  shell: |
+    cd /var/www/mern-demo/server
+    nohup npm start &
+  args:
+    chdir: /var/www/mern-demo/server
