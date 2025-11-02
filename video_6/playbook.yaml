@@ -1,0 +1,15 @@
+---
+- name: First playbook
+  hosts: my_hosts
+  gather_facts: true
+  become: true
+  become_method: ansible.builtin.sudo
+  tasks:
+    - name: Print some host file
+      ansible.builtin.debug:
+        msg: "The hostname is {{ ansible_nodename }} and it is running {{ ansible_distribution }} {{ ansible_distribution_version }}"
+    - name: Update the packages to the current version
+      ansible.builtin.apt:
+        name: '*'
+        state: present
+        update_cache: true

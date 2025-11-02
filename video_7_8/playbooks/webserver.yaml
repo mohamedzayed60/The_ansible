@@ -1,0 +1,48 @@
+---
+- name: Deploy Apache web server with Ip restrictions
+  hosts: my_hosts
+  gather_facts: true
+  become: true
+  become_method: ansible.builtin.sudo
+  vars:
+    apache_document_root: /var/www/html
+    apache_server_name: mywebsite.local
+    allowed_ip:
+    - 192.168.1.10
+    - 192.168.1.20
+    - 192.168.1.30
+    allowed_ips:
+    - 192.168.1.10
+    - 192.168.1.20
+    - 192.168.1.30
+  tasks:
+  - name: Install Apache web server
+    ansible.builtin.apt:
+      name: apache2
+      state: present
+      update_cache: true
+  - name: Deploy Apache config template
+    ansible.builtin.template:
+      src: templates/apache2.conf.j2
+      dest: /etc/apache2/sites-available/000-default.conf
+      owner: root
+      group: root
+      mode: '0644'
+    notify:
+    - Restart Apache
+  - name: Ensure Apache is started and enabled
+    ansible.builtin.command:
+      cmd: a2ensite 000-default.conf
+    notify:
+    - Restart Apache
+  - name: Start and enable Apache service
+    ansible.builtin.service:
+      name: apache2
+      state: started
+      enabled: true
+  handlers:
+  - name: Restart Apache
+    ansible.builtin.service:
+      name: apache2
+      state: restarted
+

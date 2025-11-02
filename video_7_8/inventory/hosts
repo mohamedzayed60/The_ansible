@@ -1,0 +1,7 @@
+ansiblemain ansible_host=192.168.2.4 
+[my_hosts]
+ansiblemain
+[my_hosts:vars]
+ansible_connect=ssh
+ansible_user=ansiblemain
+ansible_ssh_private_key_file=~/.ssh/id_rsa
